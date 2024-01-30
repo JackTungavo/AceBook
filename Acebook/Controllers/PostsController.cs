@@ -30,6 +30,7 @@ public class PostsController : Controller
       AcebookDbContext dbContext = new AcebookDbContext();
       int currentUserId = HttpContext.Session.GetInt32("user_id").Value;
       post.UserId = currentUserId;
+      post.Time = DateTime.UtcNow;
       dbContext.Posts.Add(post);
       dbContext.SaveChanges();
       return new RedirectResult("/posts");
