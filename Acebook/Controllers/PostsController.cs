@@ -36,6 +36,23 @@ public class PostsController : Controller
       return new RedirectResult("/posts");
     }
 
+    [Route("/posts/{id}")]
+    [HttpGet]
+    public IActionResult Show(int id)
+    {
+    AcebookDbContext dbContext = new AcebookDbContext();
+    Post post = dbContext.Posts.FirstOrDefault(p => p.Id == id);
+
+    if (post == null)
+    {
+        // Handle the case where the post with the specified ID is not found
+        return RedirectToAction("Index");
+    }
+
+    return View(post);
+}
+
+
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {
