@@ -35,6 +35,8 @@ public class PostsTests
         Assert.AreEqual("Posts", title.GetAttribute("innerHTML"));
     }
 
+    [Test]
+
     public void WhenUserCreatesNewPostItAppearsOnPage()
     {
         string currentUrl = driver.Url;
