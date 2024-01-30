@@ -46,10 +46,16 @@ public class PostsTests
         submitButton.Click();
         Assert.AreEqual("http://127.0.0.1:5287/posts", currentUrl);
         IWebElement content = driver.FindElement(By.TagName("p"));
-        Assert.AreEqual("Harry is sitting on his throne.", content.GetAttribute("innerHTML"));
-
-
-        
+        IList < IWebElement > elements = driver.FindElements(By.TagName("p"));
+        bool isFound = false;
+        foreach(IWebElement e in elements) {
+        if (e.Text == "Harry is sitting on his throne.")
+        {
+            isFound = true;
+            break;
+        }
+        }
+        Assert.AreEqual(isFound, true);
     }
 
     private void SignInUser()
