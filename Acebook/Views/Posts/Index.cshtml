@@ -11,10 +11,13 @@
 </form>
 
 @foreach (Post post in ViewBag.Posts)
-{
+{ 
+  if (post.PostParentId == 0)
+  {
   <p>@post.Content</p>
   <p>@post.Time</p>
   <p>
     <a href="/posts/@post.Id" class="btn btn-primary">Comment</a>
 </p>
+}
 }
