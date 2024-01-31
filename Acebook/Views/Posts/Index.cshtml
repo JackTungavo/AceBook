@@ -9,15 +9,23 @@
   <input type="text" name="content"/>
   <input id="submit_button" type="submit" value="Submit"/>
 </form>
-
+@if (ViewBag.Posts.Count == 0)
+{
+  <p>No Posts!</p>
+}
 @foreach (Post post in ViewBag.Posts)
-{ 
-  if (post.PostParentId == 0)
-  {
+{
+  
+  if(post.PostParentId == 0){
+
+  
   <p>@post.Content</p>
   <p>@post.Time</p>
-  <p>
-    <a href="/posts/@post.Id" class="btn btn-primary">Comment</a>
-</p>
-}
+  <p id="LinkToPosts">
+    <a href="/posts/@post.Id" class="btn btn-primary" id="LinkToPosts">Comment</a>
+  </p>
+  }
+  
+  
+  
 }
