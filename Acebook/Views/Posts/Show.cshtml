@@ -7,3 +7,27 @@
     <p>Time: @Model.Time</p>
     
 </div>
+
+<h2 id="title">Comments</h2>
+
+@foreach (Post comment in ViewBag.Comments)
+{
+    <div>
+        <p>@comment.Content</p>
+    </div>
+}
+
+
+
+
+
+<h3>Add new comment</h3>
+
+<form action="/posts/comment?postParentId=@Model.Id" method="post">
+  <input type="text" name="content"/>
+  <input id="submit_button" type="submit" value="Submit"/>
+</form>
+
+
+<h2></h2>
+
