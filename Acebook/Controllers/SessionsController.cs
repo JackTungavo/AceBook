@@ -24,7 +24,14 @@ public class SessionsController : Controller
     [HttpPost]
     public RedirectResult Create(string email, string password) {
       AcebookDbContext dbContext = new AcebookDbContext();
-      User? user = dbContext.Users.Where(user => user.Email == email).First();
+      User? user;
+      try 
+      {
+        user = dbContext.Users.Where(user => user.Email == email).First();
+      }
+      catch {
+        return new RedirectResult("/signup");
+      }
       if(user != null && user.Password == password)
       {
         HttpContext.Session.SetInt32("user_id", user.Id);
