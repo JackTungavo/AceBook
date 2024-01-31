@@ -5,6 +5,7 @@ using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Diagnostics.CodeAnalysis;
+using acebook.Models;
 
 public class PostsTests
 {
@@ -14,6 +15,7 @@ public class PostsTests
 
     public void Setup()
     {
+        CleanupDatabase();
         driver = new ChromeDriver();
         SignInUser();
     }
@@ -96,4 +98,13 @@ public class PostsTests
             IWebElement submitButton = driver.FindElement(By.Id("submit"));
             submitButton.Click();
         }
+    private void CleanupDatabase()
+    {
+        using (var dbContext = new AcebookDbContext())
+        {
+            dbContext.Posts.RemoveRange(dbContext.Posts);
+            dbContext.Users.RemoveRange(dbContext.Users);
+            dbContext.SaveChanges();
+        }
+    }
 }
