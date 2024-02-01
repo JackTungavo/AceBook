@@ -1,0 +1,26 @@
+@model acebook.Models.User
+
+<h1>Profile Page</h1>
+<div>
+    <h1>Username:</h1>
+    <p>@Model.Name</p>
+        
+    <h1>My photo</h1>
+    <img src=@Model.ProfileImage>
+    
+    <h1>My Bio</h1>
+    <p>@Model.Bio</p>
+    <p>Update details</p>
+    <form action="/updateprofile" method="post">
+        <h2>Update Username</h2>
+        <input type="text" name="newName" value="@Model.Name"/>
+        <input id="submit_button" type="submit" value="Submit"/>
+        <h2>Update Photo</h2>
+        <input type="text" name="newPhoto" value="@Model.ProfileImage"/>
+        <input id="submit_button" type="submit" value="Submit"/>
+        <h2>Update Bio</h2>
+        <input type="text" name="newBio" value="@Model.Bio"/>
+        <input id="submit_button" type="submit" value="Submit"/>
+    </form>
+
+</div>
