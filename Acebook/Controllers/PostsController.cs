@@ -20,8 +20,14 @@ public class PostsController : Controller
   [HttpGet]
   public IActionResult Index() 
   {
+    int currentUserId = HttpContext.Session.GetInt32("user_id").Value;
     List<Post> posts = dbContext.Posts.ToList();
     ViewBag.Posts = posts;
+    if (currentUserId != null)
+    {
+        ViewBag.Id = currentUserId;
+    }
+    
     return View();
   }
 

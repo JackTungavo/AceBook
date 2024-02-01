@@ -2,6 +2,7 @@
     ViewData["Title"] = "Posts";
 }
 
+@model acebook.Models.User
 
 <h1 id="title">Posts</h1>
 
@@ -28,4 +29,9 @@
   
   
   
+  
+}
+@if (ViewBag.Id != null)
+{
+  <a href="/profile/@ViewBag.Id">My profile page</a>
 }
