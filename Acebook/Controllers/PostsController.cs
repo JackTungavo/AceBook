@@ -49,8 +49,6 @@ public class PostsController : Controller
   //AcebookDbContext dbContext = new AcebookDbContext();
   Post post = dbContext.Posts.FirstOrDefault(p => p.Id == id);
   post.Likes = GetLikesFromPost(post);
-  //dbContext.Posts.Update(post);
-  //dbContext.SaveChanges();
 
   if (post == null)
   {
