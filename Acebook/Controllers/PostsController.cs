@@ -25,6 +25,8 @@ public class PostsController : Controller
     var currentUserId = HttpContext.Session.GetInt32("user_id");
     if (currentUserId != null) 
     {
+      User user = dbContext.Users.Find(currentUserId);
+      ViewBag.ProfileImage = user.ProfileImage;
       ViewBag.Id = (int)currentUserId.Value;
     }
     
@@ -73,7 +75,7 @@ public class PostsController : Controller
     {
       comment.Likes = GetLikesFromPost(comment);
     }
-    dbContext.SaveChanges();
+    //dbContext.SaveChanges();
     // Pass the post and comments to the view
 
     List<Post> sortedByTimeCommments = comments.OrderByDescending(comment => comment.Time).ToList();
@@ -81,6 +83,7 @@ public class PostsController : Controller
     ViewBag.Comments = sortedByTimeCommments;//comments;
     User user = dbContext.Users.Find(currentUserId);
     ViewBag.ProfileImage = user.ProfileImage;
+    dbContext.SaveChanges();
 
     return View(post);
   }
