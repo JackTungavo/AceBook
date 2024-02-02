@@ -95,7 +95,54 @@ public class PostsTests
         }
         }
         Assert.That(isFound, Is.EqualTo(true));
+
+    
     }
+
+    [Test]
+
+    public void CommentAppearOnPostPageWhenAddedToPost()
+    {  
+        // Create a new post.
+        IWebElement newPostField = driver.FindElement(By.Name("content"));
+        newPostField.SendKeys("Test Post");
+        IWebElement submitButton = driver.FindElement(By.Id("submit_button"));
+        submitButton.Click();
+        // Go to post page.
+        IWebElement commentButton = driver.FindElement(By.CssSelector("a.btn.btn-primary"));
+        commentButton.Click();
+        string currentUrl = driver.Url;
+        // Get new post ID to go to correct page.
+        AcebookDbContext dbContext = new AcebookDbContext();
+        int postId = 0;
+        foreach (Post post in dbContext.Posts) {
+            postId = post.Id;
+        }
+        
+        Assert.AreEqual($"http://127.0.0.1:5287/posts/{postId}", currentUrl);
+
+        // Add a new comment.
+        IWebElement newCommentField = driver.FindElement(By.Name("content"));
+        newCommentField.SendKeys("Test Comment");
+        IWebElement submitCommentButton = driver.FindElement(By.Id("comment_button"));
+        submitCommentButton.Click();
+        // Find new comment on page.
+        IList <IWebElement> elements = driver.FindElements(By.TagName("p"));
+        bool isFound = false;
+        foreach(IWebElement e in elements) {
+        Console.WriteLine(e.Text);
+        if (e.Text == "Test Comment")
+        {
+            isFound = true;
+            break;
+        }
+        }
+        Assert.That(isFound, Is.EqualTo(true));
+        // IWebElement title = driver.FindElement(By.Id("comments"));
+        // Assert.AreEqual("Test Comment", title.GetAttribute("innerHTML"));
+    }
+
+
 
     //Do not turn this into a test
     private void SignInUser()
