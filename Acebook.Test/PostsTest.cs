@@ -34,9 +34,9 @@ public class PostsTests
     public void IndexPageHasPostInTitle()
     {
         string currentUrl = driver.Url;
-        Assert.AreEqual("http://127.0.0.1:5287/posts", currentUrl);
+        Assert.That(currentUrl, Is.EqualTo("http://127.0.0.1:5287/posts"));
         IWebElement title = driver.FindElement(By.Id("title"));
-        Assert.AreEqual("Posts", title.GetAttribute("innerHTML"));
+        Assert.That(title.GetAttribute("innerHTML"), Is.EqualTo("Posts"));
     }
 
     [Test]
@@ -48,7 +48,7 @@ public class PostsTests
         emailField.SendKeys("Harry is sitting on his throne.");
         IWebElement submitButton = driver.FindElement(By.Id("submit_button"));
         submitButton.Click();
-        Assert.AreEqual("http://127.0.0.1:5287/posts", currentUrl);
+        Assert.That(currentUrl, Is.EqualTo("http://127.0.0.1:5287/posts"));
         IWebElement content = driver.FindElement(By.TagName("p"));
         IList < IWebElement > elements = driver.FindElements(By.TagName("p"));
         bool isFound = false;
@@ -76,10 +76,13 @@ public class PostsTests
         int idNum = 0;
         using (var dbContext = new AcebookDbContext())
         {
-            foreach (Post post in dbContext.Posts)
-            {
-                idNum = post.Id;
+            if (dbContext.Posts != null) {
+                foreach (Post post in dbContext.Posts)
+                {
+                    idNum = post.Id;
+                }
             }
+
         }
 
         Assert.That($"http://127.0.0.1:5287/posts/{idNum}", Is.EqualTo(currentUrl));
@@ -177,9 +180,8 @@ public class PostsTests
     {
         using (var dbContext = new AcebookDbContext())
         {
-            dbContext.Posts.RemoveRange(dbContext.Posts);
-            dbContext.Users.RemoveRange(dbContext.Users);
-
+            if (dbContext.Posts != null) {dbContext.Posts.RemoveRange(dbContext.Posts);}
+            if (dbContext.Users != null) {dbContext.Users.RemoveRange(dbContext.Users);}
             dbContext.SaveChanges();
         }
     }

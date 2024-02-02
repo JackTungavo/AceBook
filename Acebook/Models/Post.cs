@@ -10,7 +10,7 @@ public class Post
   public User? User {get; set;}
   public DateTime Time {get; set;}
   public int PostParentId {get; set;}
-  public string UsersLiked {get; set;}
+  public string? UsersLiked {get; set;}
   public int Likes {get; set;}
 
   public Post(string Content, int user_id, User user, DateTime time, int postParentId, string usersLiked, int likes) {
@@ -25,15 +25,18 @@ public class Post
 
   public void LikePost(int userId)
   {
-    if (!this.UsersLiked.Contains("'"+userId.ToString()+"'"))  // 'userid'
+    if (this.UsersLiked != null) 
     {
-      this.UsersLiked += $"'{userId.ToString()}'";
-      Console.WriteLine($"Post Liked! - POSTID: {this.Id}");
-    } 
-    else 
-    {
-      this.UsersLiked = this.UsersLiked.Replace($"'{userId.ToString()}'","");
-      Console.WriteLine($"Post Un-Liked! - POSTID: {this.Id}");
+      if (!this.UsersLiked.Contains("'"+userId.ToString()+"'"))  // 'userid'
+      {
+        this.UsersLiked += $"'{userId.ToString()}'";
+        Console.WriteLine($"Post Liked! - POSTID: {this.Id}");
+      } 
+      else 
+      {
+        this.UsersLiked = this.UsersLiked.Replace($"'{userId.ToString()}'","");
+        Console.WriteLine($"Post Un-Liked! - POSTID: {this.Id}");
+      }
     }
   }
 
