@@ -25,12 +25,13 @@
     else {
       @if (ViewBag.Id==post.User.Id)
       {
-        <p>Posted By: Me</p>
+        <a href="/profile/@post.User.Id" >Posted By: Me</a>
       }
       else
       {
-      <p>Posted By: @post.User.Name</p>
+      <a href="/profile/@post.User.Id" >Posted By: @post.User.Name</a>
       }
+      <img src=@post.User.ProfileImage width="2%">
     }
   
   <p>@post.Content</p>
