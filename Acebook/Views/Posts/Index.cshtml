@@ -19,17 +19,26 @@
   
   if(post.PostParentId == 0){
 
-  
+  @if (post.User == null)
+  {
+    <p>User Not Found</p>
+  }
+  else {
+    @if (ViewBag.Id==post.User.Id)
+    {
+      <p>MY POST</p>
+    }
+    else
+    {
+    <p>@post.User.Name</p>
+    }
+  }
   <p>@post.Content</p>
   <p>@post.Time</p>
   <p id="LinkToPosts">
     <a href="/posts/@post.Id" class="btn btn-primary" id="LinkToPosts">Comment</a>
   </p>
   }
-  
-  
-  
-  
 }
 @if (ViewBag.Id != null)
 {
