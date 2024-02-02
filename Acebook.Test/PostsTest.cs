@@ -118,11 +118,14 @@ public class PostsTests
         // Get new post ID to go to correct page.
         AcebookDbContext dbContext = new AcebookDbContext();
         int postId = 0;
-        foreach (Post post in dbContext.Posts) {
-            postId = post.Id;
+        if (dbContext.Posts != null)
+        {
+            foreach (Post post in dbContext.Posts) {
+                postId = post.Id;
+            }
         }
         
-        Assert.AreEqual($"http://127.0.0.1:5287/posts/{postId}", currentUrl);
+        Assert.That(currentUrl, Is.EqualTo($"http://127.0.0.1:5287/posts/{postId}"));
 
         // Add a new comment.
         IWebElement newCommentField = driver.FindElement(By.Name("content"));

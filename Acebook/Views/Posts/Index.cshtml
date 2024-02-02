@@ -18,23 +18,29 @@
 {
   
   if(post.PostParentId == 0){
-    @if (post.User == null)
-    {
-      <p>Posted By: User Not Found</p>
-    }
+    @if (post.User == null) {<p>Posted By: User Not Found</p>}
     else {
       @if (ViewBag.Id==post.User.Id)
       {
-        <a title="Go to your profile" href="/profile/@post.User.Id" >Posted By: Me</a>
+        <a title="Go to your profile" href="/profile/@post.User.Id" >Posted By: Me <img src=@post.User.ProfileImage width="2%"> </a>
       }
       else
       {
-      <a title="Go to {@post.User.Name}'s profile" href="/profile/@post.User.Id" >Posted By: @post.User.Name</a>
+      <a title="Go to {@post.User.Name}'s profile" href="/profile/@post.User.Id" >Posted By: @post.User.Name <img src=@post.User.ProfileImage width="2%"> </a>
       }
-      <img src=@post.User.ProfileImage width="2%">
     }
   
-  <p>@post.Content</p>
+  bool imageFound = false;
+  @foreach (string ImgForm in ViewBag.ImageFormats) 
+  {
+    if (post.Content != null && post.Content.Contains(ImgForm)) 
+    {
+      imageFound = true;
+      break;
+    }
+  }
+  if (imageFound == true) {<img tag="postImage" src=@post.Content width="30%">}
+  else {<p>@post.Content</p>}
   <p>@post.Time</p>
   <p id="LinkToPosts">
     <a href="/posts/@post.Id" class="btn btn-primary" id="LinkToPosts">Comment</a>

@@ -5,6 +5,7 @@ using acebook.ActionFilters;
 using Microsoft.VisualBasic;
 using System.Reflection.Metadata;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
 
 namespace acebook.Controllers;
 
@@ -33,6 +34,25 @@ public class PostsController : Controller
       List<Post> posts = dbContext.Posts.ToList();
       ViewBag.Posts = posts;
     }
+
+    //ImageFormats
+    ViewBag.ImageFormats = new List<string>() {".jpg",".jpeg",".png"};
+    //bool ImageExists = false;
+    //foreach (string ImgForm in ViewBag.ImageFormats) 
+    //{
+      //start by checking if format is in post content.
+    //  if (post.Content.Contains(ImgForm)) {
+
+    //  }
+      //if it is then, check it is a valid image from web.
+    //  HttpWebRequest req = (HttpWebRequest)HttpWebRequest.Create(url);
+    //  req.Method = "HEAD";
+    //  try {req.GetResponse();ImageExists = true;}
+    //  catch{ImageExists = false;}
+    //  if (ImageExists == true) {break;}
+    //}
+    //ViewBag.ImageExists = ImageExists;
+    
     return View();
   }
 
