@@ -26,6 +26,8 @@ public class PostsController : Controller
     var currentUserId = HttpContext.Session.GetInt32("user_id");
     if (currentUserId != null) 
     {
+      User user = dbContext.Users.Find(currentUserId);
+      ViewBag.ProfileImage = user.ProfileImage;
       ViewBag.Id = (int)currentUserId.Value;
     }
     
@@ -79,6 +81,7 @@ public class PostsController : Controller
   [HttpGet]
   public IActionResult Show(int id)
   {
+    var currentUserId = HttpContext.Session.GetInt32("user_id");
     if (dbContext.Posts == null) {return RedirectToAction("Index");}
     Post post = dbContext.Posts.FirstOrDefault(p => p.Id == id) ?? new Post();
     if (post == null)
@@ -92,12 +95,15 @@ public class PostsController : Controller
     {
       comment.Likes = GetLikesFromPost(comment);
     }
-    dbContext.SaveChanges();
+    //dbContext.SaveChanges();
     // Pass the post and comments to the view
 
     List<Post> sortedByTimeCommments = comments.OrderByDescending(comment => comment.Time).ToList();
     ViewBag.Post = post;
     ViewBag.Comments = sortedByTimeCommments;//comments;
+    User user = dbContext.Users.Find(currentUserId);
+    ViewBag.ProfileImage = user.ProfileImage;
+    dbContext.SaveChanges();
 
     return View(post);
   }

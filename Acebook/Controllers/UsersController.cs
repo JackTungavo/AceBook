@@ -24,7 +24,7 @@ public class UsersController : Controller
     [HttpPost]
     public RedirectResult Create(User user) {
       AcebookDbContext dbContext = new AcebookDbContext();
-      user.ProfileImage = "https://upload.wikimedia.org/wikipedia/commons/6/65/No-Image-Placeholder.svg";
+      user.ProfileImage = "https://creativeandcultural.files.wordpress.com/2018/04/default-profile-picture.png?w=256";
       dbContext.Users.Add(user);
       dbContext.SaveChanges();
       return new RedirectResult("/signin");
@@ -37,8 +37,17 @@ public class UsersController : Controller
     {
         AcebookDbContext dbContext = new AcebookDbContext();
         int currentUserId = HttpContext.Session.GetInt32("user_id").Value;
-        User user = dbContext.Users.Find(id);
-        return View(user);
+        if (currentUserId == null)
+        {
+            return View();
+        } else {
+            ViewBag.Id = currentUserId;
+            User user = dbContext.Users.Find(id);
+            ViewBag.ProfileImage = user.ProfileImage;
+            Console.WriteLine(dbContext);
+            return View(user);
+        }
+        
     }
 
     [Route("/updateprofile")]
