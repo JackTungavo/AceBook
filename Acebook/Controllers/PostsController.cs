@@ -59,6 +59,7 @@ public class PostsController : Controller
   [HttpGet]
   public IActionResult Show(int id)
   {
+    var currentUserId = HttpContext.Session.GetInt32("user_id");
     if (dbContext.Posts == null) {return RedirectToAction("Index");}
     Post post = dbContext.Posts.FirstOrDefault(p => p.Id == id) ?? new Post();
     if (post == null)
@@ -78,6 +79,8 @@ public class PostsController : Controller
     List<Post> sortedByTimeCommments = comments.OrderByDescending(comment => comment.Time).ToList();
     ViewBag.Post = post;
     ViewBag.Comments = sortedByTimeCommments;//comments;
+    User user = dbContext.Users.Find(currentUserId);
+    ViewBag.ProfileImage = user.ProfileImage;
 
     return View(post);
   }
