@@ -37,7 +37,10 @@ public class UsersController : Controller
     {
         AcebookDbContext dbContext = new AcebookDbContext();
         int currentUserId = HttpContext.Session.GetInt32("user_id").Value;
+        ViewBag.Id = currentUserId;
         User user = dbContext.Users.Find(id);
+        ViewBag.ProfileImage = user.ProfileImage;
+        Console.WriteLine(dbContext);
         return View(user);
     }
 
