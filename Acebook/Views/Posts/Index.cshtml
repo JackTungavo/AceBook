@@ -25,11 +25,11 @@
     else {
       @if (ViewBag.Id==post.User.Id)
       {
-        <a href="/profile/@post.User.Id" >Posted By: Me</a>
+        <a title="Go to your profile" href="/profile/@post.User.Id" >Posted By: Me</a>
       }
       else
       {
-      <a href="/profile/@post.User.Id" >Posted By: @post.User.Name</a>
+      <a title="Go to {@post.User.Name}'s profile" href="/profile/@post.User.Id" >Posted By: @post.User.Name</a>
       }
       <img src=@post.User.ProfileImage width="2%">
     }
