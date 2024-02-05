@@ -82,62 +82,73 @@ public class UsersController : Controller
       return new RedirectResult("/signin");
     }
 
-    [Route("/profile/{id}")]
-    [HttpGet]
+[Route("/profile/{id}")]
+[HttpGet]
+public IActionResult Profile(int id)
+{
+    int currentUserId = HttpContext.Session.GetInt32("user_id").Value;
 
-    public IActionResult Profile(int id)
+    if (currentUserId == null)
     {
-        // AcebookDbContext dbContext = new AcebookDbContext();
-        int currentUserId = HttpContext.Session.GetInt32("user_id").Value;
-        if (currentUserId == null)
-        {
-            return View();
-        } 
-        else 
-        {
-            ViewBag.Id = currentUserId;
-            ViewBag.UsersIFollowingNumber = GetNumberOfUserFollow(id);
-            ViewBag.UsersFollowersNumber = GetNumberOfUserFollowers(id);
-
-            string FollowingStatus = "Follow";
-            User currentUser = dbContext.Users.Find(currentUserId);
-            User profileUser = dbContext.Users.Find(id); //?? new User();
-
-            //Console.WriteLine(currentUser == null);
-            //Console.WriteLine(profileUser == null);
-                if (currentUser.UsersIFollow.Contains("'"+id.ToString()+"',")) {FollowingStatus = "Following";}
-                if (FollowingStatus == "Following" && profileUser.UsersIFollow.Contains("'"+currentUserId.ToString()+"',")){FollowingStatus = "Friends";}
-                if (FollowingStatus == "Follow" && profileUser.UsersIFollow.Contains("'"+currentUserId.ToString()+"',")){FollowingStatus = "Follow Back";};
-            
-            ViewBag.FollowingStatus = FollowingStatus;//FollowingStatus;
-            
-            ViewBag.ProfileImage = profileUser.ProfileImage;
-            Console.WriteLine(dbContext);
-            return View(profileUser);
-        }        
-    }
-
-    [Route("/followuser")]
-    [HttpPost]
-    public RedirectResult Follow(int profileId)
+        return View();
+    } 
+    else 
     {
-        Console.WriteLine("PROFILEID: "+profileId);
-        int currentUserId = HttpContext.Session.GetInt32("user_id").Value;
+        ViewBag.Id = currentUserId;
+        ViewBag.UsersIFollowingNumber = GetNumberOfUserFollow(id);
+        ViewBag.UsersFollowersNumber = GetNumberOfUserFollowers(id);
+        
+        string FollowingStatus = "Follow";
         User currentUser = dbContext.Users.Find(currentUserId);
+        User profileUser = dbContext.Users.Find(id);
 
-        if (currentUser.UsersIFollow.Contains("'"+profileId.ToString()+"',")) 
-        {
-            UnfollowUser(profileId);
-            //dbContext.Users.Update(currentUser);
-            //dbContext.SaveChanges();
-        }
-        else
-        {
-            FollowUser(profileId);
-        }
+        ViewBag.CurrentUserImage = currentUser.ProfileImage;
+        ViewBag.ProfileLookingAtImage = profileUser.ProfileImage;
 
-        return new RedirectResult($"/profile/{profileId}");
+            if (currentUser.UsersIFollow.Contains($"'{id}',"))
+            {
+                FollowingStatus = "Following";
+                ViewBag.FollowButtonText = "Unfollow";
+            }
+            else
+            {
+                ViewBag.FollowButtonText = "Follow";
+            }
+                return View(profileUser);
+            }
+}
+
+[Route("/users/")]
+
+
+[Route("/users/followuser")]
+[HttpPost]
+public IActionResult Follow(int profileId)
+{
+    int currentUserId = HttpContext.Session.GetInt32("user_id").Value;
+    User currentUser = dbContext.Users.Find(currentUserId);
+
+    if (!currentUser.UsersIFollow.Contains($"'{profileId}',"))
+    {
+        // If not already following, follow the user
+        FollowUser(profileId);
+        ViewBag.FollowButtonText = "Unfollow";
     }
+    else
+    {
+        // If already following, unfollow the user
+        UnfollowUser(profileId);
+        ViewBag.FollowButtonText = "Follow";
+    }
+
+    // Update the ViewBag with the updated follower counts
+    ViewBag.UsersIFollowingNumber = GetNumberOfUserFollow(currentUserId);
+    ViewBag.UsersFollowersNumber = GetNumberOfUserFollowers(currentUserId);
+
+    // Redirect back to the same profile page
+    return RedirectToAction("Profile", new { id = profileId });
+}
+
 
 
     [Route("/updateprofile")]

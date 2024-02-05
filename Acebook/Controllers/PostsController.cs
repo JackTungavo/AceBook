@@ -27,7 +27,7 @@ public class PostsController : Controller
     if (currentUserId != null) 
     {
       User user = dbContext.Users.Find(currentUserId);
-      ViewBag.ProfileImage = user.ProfileImage;
+      ViewBag.CurrentUserImage = user.ProfileImage;
       ViewBag.Id = (int)currentUserId.Value;
     }
     
@@ -102,7 +102,7 @@ public class PostsController : Controller
     ViewBag.Post = post;
     ViewBag.Comments = sortedByTimeCommments;//comments;
     User user = dbContext.Users.Find(currentUserId);
-    ViewBag.ProfileImage = user.ProfileImage;
+    ViewBag.CurrentUserImage = user.ProfileImage;
     dbContext.SaveChanges();
 
     return View(post);
