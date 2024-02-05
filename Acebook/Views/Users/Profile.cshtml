@@ -2,25 +2,34 @@
 
 <h1>Profile Page</h1>
 <div>
-    <h1>Username:</h1>
-    <p>@Model.Name</p>
-        
-    <h1>My photo</h1>
-    <img src=@Model.ProfileImage width="10%">
+    <h2>Username: @Model.Name <img src=@ViewBag.ProfileLookingAtImage width="10%" style="width: 65px; border-radius: 20px"></h2>
     
-    <h1>My Bio</h1>
+    <h4>Followers: @ViewBag.UsersFollowersNumber || Following: @ViewBag.UsersIFollowingNumber</h4> 
+    @if (Model.Id != ViewBag.Id)
+    {   
+        //<p>Following Status: @ViewBag.FollowingStatus</p>
+        <form action="/users/followuser" method="post">
+        <input type="hidden" name="profileId" value="@Model.Id" />
+        <input id="submit_button" type="submit" value="@ViewBag.FollowButtonText" />
+        </form>
+    }
+    
+    <h4>My Bio</h4>
     <p>@Model.Bio</p>
-    <p>Update details</p>
-    <form action="/updateprofile" method="post">
-        <h2>Update Username</h2>
-        <input type="text" name="newName" value="@Model.Name"/>
-        <input id="submit_button" type="submit" value="Submit"/>
-        <h2>Update Photo</h2>
-        <input type="text" name="newPhoto" value="@Model.ProfileImage"/>
-        <input id="submit_button" type="submit" value="Submit"/>
-        <h2>Update Bio</h2>
-        <input type="text" name="newBio" value="@Model.Bio"/>
-        <input id="submit_button" type="submit" value="Submit"/>
-    </form>
+    @if (Model.Id == ViewBag.Id)
+    {
+        <p>Update details</p>
+        <form action="/updateprofile" method="post">
+            <h2>Update Username</h2>
+            <input type="text" name="newName" value="@Model.Name"/>
+            <input id="submit_button" type="submit" value="Submit"/>
+            <h2>Update Photo</h2>
+            <input type="text" name="newPhoto" value="@ViewBag.ProfileLookingAtImage"/>
+            <input id="submit_button" type="submit" value="Submit"/>
+            <h2>Update Bio</h2>
+            <input type="text" name="newBio" value="@Model.Bio"/>
+            <input id="submit_button" type="submit" value="Submit"/>
+        </form>
+    }
 
 </div>

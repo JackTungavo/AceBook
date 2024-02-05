@@ -9,6 +9,8 @@ public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
 
+    AcebookDbContext dbContext = new AcebookDbContext();
+
     public HomeController(ILogger<HomeController> logger)
     {
         _logger = logger;
@@ -17,6 +19,13 @@ public class HomeController : Controller
     [Route("/")]
     public IActionResult Index()
     {
+        //HttpContext.Session.GetInt32("user_id").Value = 0;
+        int? userId = HttpContext.Session.GetInt32("user_id");
+        if (userId.HasValue)
+        {
+            HttpContext.Session.SetInt32("user_id", 0);
+        }
+
         return View();
     }
 

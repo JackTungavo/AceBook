@@ -22,11 +22,11 @@
     else {
       @if (ViewBag.Id==post.User.Id)
       {
-        <a title="Go to your profile" href="/profile/@post.User.Id" >Posted By: Me <img src=@post.User.ProfileImage width="2%"> </a>
+        <a title="Go to your profile" href="/profile/@post.User.Id" >Posted By: Me <img src=@post.User.ProfileImage width="2%" style="border-radius: 20px;"> </a>
       }
       else
       {
-      <a title="Go to {@post.User.Name}'s profile" href="/profile/@post.User.Id" >Posted By: @post.User.Name <img src=@post.User.ProfileImage width="2%"> </a>
+      <a title="Go to {@post.User.Name}'s profile" href="/profile/@post.User.Id" >Posted By: @post.User.Name <img src=@post.User.ProfileImage width="2%" style="border-radius: 20px;"> </a>
       }
     }
   
