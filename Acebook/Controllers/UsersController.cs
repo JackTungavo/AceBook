@@ -7,10 +7,60 @@ namespace acebook.Controllers;
 public class UsersController : Controller
 {
     private readonly ILogger<UsersController> _logger;
+    AcebookDbContext dbContext = new AcebookDbContext();
 
     public UsersController(ILogger<UsersController> logger)
     {
         _logger = logger;
+    }
+
+    public void UnfollowUser(int UserIdIWantToUnfollow)
+    {
+        int currentUserId = HttpContext.Session.GetInt32("user_id").Value;
+        User user = dbContext.Users.Find(currentUserId);
+        User userToUnfollow = dbContext.Users.Find(UserIdIWantToUnfollow);
+
+        user.UsersIFollow = user.UsersIFollow.Replace("'"+UserIdIWantToUnfollow.ToString()+"',","");
+        userToUnfollow.UsersFollowingMe = userToUnfollow.UsersFollowingMe.Replace("'"+currentUserId.ToString()+"',","");
+
+        dbContext.Users.Update(user);
+        dbContext.Users.Update(userToUnfollow);
+        dbContext.SaveChanges();
+    }
+
+    public void FollowUser(int UserIdIWantToFollow)
+    {
+        int currentUserId = HttpContext.Session.GetInt32("user_id").Value;
+        User user = dbContext.Users.Find(currentUserId);
+        User userToFollow = dbContext.Users.Find(UserIdIWantToFollow);
+        Console.WriteLine($"user.UsersIFollow: {user.UsersIFollow.ToString()}");
+        if (user.UsersIFollow.Contains("'"+UserIdIWantToFollow.ToString()+"',") == false) 
+        {
+            user.UsersIFollow += "'"+UserIdIWantToFollow.ToString()+"',";
+            dbContext.Users.Update(user);
+            userToFollow.UsersFollowingMe += "'"+currentUserId.ToString()+"',";
+            dbContext.Users.Update(userToFollow);
+        }
+        else
+        {
+            user.UsersIFollow = user.UsersIFollow.Replace("'"+UserIdIWantToFollow.ToString()+"',","");
+            dbContext.Users.Update(user);
+            userToFollow.UsersFollowingMe = userToFollow.UsersFollowingMe.Replace("'"+currentUserId.ToString()+"',","");
+            dbContext.Users.Update(userToFollow);
+        }
+        dbContext.SaveChanges();
+    }
+
+    public int GetNumberOfUserFollowers(int UserId)
+    {
+        User CurrentUser = dbContext.Users.Find(UserId);
+        return CurrentUser.UsersFollowingMe.Split(',').ToList().Count-1;
+    }
+
+    public int GetNumberOfUserFollow(int UserId)
+    {
+        User CurrentUser = dbContext.Users.Find(UserId);
+        return CurrentUser.UsersIFollow.Split(',').ToList().Count-1;
     }
 
     [Route("/signup")]
@@ -23,8 +73,10 @@ public class UsersController : Controller
     [Route("/users")]
     [HttpPost]
     public RedirectResult Create(User user) {
-      AcebookDbContext dbContext = new AcebookDbContext();
+      //AcebookDbContext dbContext = new AcebookDbContext();
       user.ProfileImage = "https://creativeandcultural.files.wordpress.com/2018/04/default-profile-picture.png?w=256";
+      user.UsersIFollow = string.Empty;
+      user.UsersFollowingMe = string.Empty;
       dbContext.Users.Add(user);
       dbContext.SaveChanges();
       return new RedirectResult("/signin");
@@ -35,27 +87,65 @@ public class UsersController : Controller
 
     public IActionResult Profile(int id)
     {
-        AcebookDbContext dbContext = new AcebookDbContext();
+        // AcebookDbContext dbContext = new AcebookDbContext();
         int currentUserId = HttpContext.Session.GetInt32("user_id").Value;
         if (currentUserId == null)
         {
             return View();
-        } else {
+        } 
+        else 
+        {
             ViewBag.Id = currentUserId;
-            User user = dbContext.Users.Find(id);
-            ViewBag.ProfileImage = user.ProfileImage;
+            ViewBag.UsersIFollowingNumber = GetNumberOfUserFollow(id);
+            ViewBag.UsersFollowersNumber = GetNumberOfUserFollowers(id);
+
+            string FollowingStatus = "Follow";
+            User currentUser = dbContext.Users.Find(currentUserId);
+            User profileUser = dbContext.Users.Find(id); //?? new User();
+
+            //Console.WriteLine(currentUser == null);
+            //Console.WriteLine(profileUser == null);
+                if (currentUser.UsersIFollow.Contains("'"+id.ToString()+"',")) {FollowingStatus = "Following";}
+                if (FollowingStatus == "Following" && profileUser.UsersIFollow.Contains("'"+currentUserId.ToString()+"',")){FollowingStatus = "Friends";}
+                if (FollowingStatus == "Follow" && profileUser.UsersIFollow.Contains("'"+currentUserId.ToString()+"',")){FollowingStatus = "Follow Back";};
+            
+            ViewBag.FollowingStatus = FollowingStatus;//FollowingStatus;
+            
+            ViewBag.ProfileImage = profileUser.ProfileImage;
             Console.WriteLine(dbContext);
-            return View(user);
-        }
-        
+            return View(profileUser);
+        }        
     }
+
+    [Route("/followuser")]
+    [HttpPost]
+    public RedirectResult Follow(int profileId)
+    {
+        Console.WriteLine("PROFILEID: "+profileId);
+        int currentUserId = HttpContext.Session.GetInt32("user_id").Value;
+        User currentUser = dbContext.Users.Find(currentUserId);
+
+        if (currentUser.UsersIFollow.Contains("'"+profileId.ToString()+"',")) 
+        {
+            UnfollowUser(profileId);
+            //dbContext.Users.Update(currentUser);
+            //dbContext.SaveChanges();
+        }
+        else
+        {
+            FollowUser(profileId);
+        }
+
+        return new RedirectResult($"/profile/{profileId}");
+    }
+
 
     [Route("/updateprofile")]
     [HttpPost]
 
     public RedirectResult UpdateProfile(string newName, string newPhoto, string newBio)
     {
-        AcebookDbContext dbContext = new AcebookDbContext();
+        //AcebookDbContext dbContext = new AcebookDbContext();
         int currentUserId = HttpContext.Session.GetInt32("user_id").Value;
 
         User user = dbContext.Users.Find(currentUserId);

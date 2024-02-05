@@ -15,7 +15,11 @@ public class User
 
   public string? ProfileImage {get; set;}
 
-public User(string name, string email, string password, ICollection<Post> posts, string bio, string profileImage)
+  public string? UsersFollowingMe {get; set;}
+
+  public string? UsersIFollow {get; set;}
+
+public User(string name, string email, string password, ICollection<Post> posts, string bio, string profileImage, string usersFollowingMe, string usersIFollow)
 {
   this.Name = name;
   this.Email = email;
@@ -23,6 +27,8 @@ public User(string name, string email, string password, ICollection<Post> posts,
   this.Posts = posts;
   this.Bio = bio;
   this.ProfileImage = profileImage;
+  this.UsersFollowingMe = usersFollowingMe;
+  this.UsersIFollow = usersIFollow;
 }
 
 public User() {

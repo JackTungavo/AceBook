@@ -8,19 +8,39 @@
     <h1>My photo</h1>
     <img src=@Model.ProfileImage width="10%">
     
+    <p>Followers: @ViewBag.UsersFollowersNumber || Following: @ViewBag.UsersIFollowingNumber</p> 
+    @if (Model.Id != ViewBag.Id)
+    {   
+        <p>Following Status: @ViewBag.FollowingStatus</p>
+        <form action="/followuser" method="post">
+             <input id="submit_button" type="submit" name="profileId" value="@Model.Id"/>
+             
+             @* <input id="submit_button" type="button" text="@ViewBag.FollowingStatus"/> *@
+        </form>
+
+        //<form action="/followuser(@Model.Id)" method="post">
+        //    <input type="hidden" name="profileId" value="@Model.Id" />
+        //    <button id="submit_button" type="submit" style="width: 16%;">@ViewBag.FollowingStatus</button>
+        //</form>
+
+    }
+    
     <h1>My Bio</h1>
     <p>@Model.Bio</p>
-    <p>Update details</p>
-    <form action="/updateprofile" method="post">
-        <h2>Update Username</h2>
-        <input type="text" name="newName" value="@Model.Name"/>
-        <input id="submit_button" type="submit" value="Submit"/>
-        <h2>Update Photo</h2>
-        <input type="text" name="newPhoto" value="@Model.ProfileImage"/>
-        <input id="submit_button" type="submit" value="Submit"/>
-        <h2>Update Bio</h2>
-        <input type="text" name="newBio" value="@Model.Bio"/>
-        <input id="submit_button" type="submit" value="Submit"/>
-    </form>
+    @if (Model.Id == ViewBag.Id)
+    {
+        <p>Update details</p>
+        <form action="/updateprofile" method="post">
+            <h2>Update Username</h2>
+            <input type="text" name="newName" value="@Model.Name"/>
+            <input id="submit_button" type="submit" value="Submit"/>
+            <h2>Update Photo</h2>
+            <input type="text" name="newPhoto" value="@Model.ProfileImage"/>
+            <input id="submit_button" type="submit" value="Submit"/>
+            <h2>Update Bio</h2>
+            <input type="text" name="newBio" value="@Model.Bio"/>
+            <input id="submit_button" type="submit" value="Submit"/>
+        </form>
+    }
 
 </div>
