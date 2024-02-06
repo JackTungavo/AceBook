@@ -101,8 +101,12 @@ public IActionResult Profile(int id)
         string FollowingStatus = "Follow";
         User currentUser = dbContext.Users.Find(currentUserId);
         User profileUser = dbContext.Users.Find(id);
-
+        
+        // ViewBag.currentUsersFollowingMe = currentUser.UsersFollowingMe;
+        // ViewBag.profileUsersFollowingMe = profileUser.UsersFollowingMe;
+        
         ViewBag.CurrentUserImage = currentUser.ProfileImage;
+        
         ViewBag.ProfileLookingAtImage = profileUser.ProfileImage;
 
             if (currentUser.UsersIFollow.Contains($"'{id}',"))
