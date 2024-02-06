@@ -54,12 +54,16 @@ public class UsersController : Controller
     public int GetNumberOfUserFollowers(int UserId)
     {
         User CurrentUser = dbContext.Users.Find(UserId);
+        if (CurrentUser == null) {return 0;}
+        if (CurrentUser.UsersFollowingMe == null) {return 0;}
         return CurrentUser.UsersFollowingMe.Split(',').ToList().Count-1;
     }
 
     public int GetNumberOfUserFollow(int UserId)
     {
         User CurrentUser = dbContext.Users.Find(UserId);
+        if (CurrentUser == null) {return 0;}
+        if (CurrentUser.UsersIFollow == null) {return 0;}
         return CurrentUser.UsersIFollow.Split(',').ToList().Count-1;
     }
 
