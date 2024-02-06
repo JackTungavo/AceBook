@@ -153,9 +153,10 @@ public class PostsTests
     //Do not turn this into a test
     private void SignInUser()
         {
-            driver.Navigate().GoToUrl("http://127.0.0.1:5287");
-            IWebElement signUpButton = driver.FindElement(By.Id("signup"));
-            signUpButton.Click();
+            driver.Navigate().GoToUrl("http://127.0.0.1:5287/signup");
+            // Not working for Harry everyone must suffer for his misfortune.
+            // IWebElement signUpButton = driver.FindElement(By.XPath("//*[text()='Sign Up']"));
+            // signUpButton.Click();
             IWebElement nameField = driver.FindElement(By.Id("name"));
             nameField.SendKeys("francine");
 
