@@ -5,7 +5,6 @@
 @model acebook.Models.Message
 
 @if (ViewBag.currentUser != null) {<h1 id="IndexTitle">MY MESSAGES</h1>}
-else {<h1 id="IndexTitle">MESSAGES - "NOT SIGNED IN"</h1>}
 
 @foreach (List<dynamic> check in ViewBag.HasConversation)
 {
