@@ -59,6 +59,7 @@ public class MessagesController : Controller
   {
     //returns if we have conversations with users
     var currentUserId = HttpContext.Session.GetInt32("user_id");
+    ViewBag.Id = (int)currentUserId.Value;
     var AllUsers = dbContext.Users.ToList();
     List<List<dynamic>> HasConversation = new List<List<dynamic>>(); //[0] = OtherUserObj, [1] = Any Messages Sent Bool, [2] = Last Message Sent
 
@@ -84,6 +85,7 @@ public class MessagesController : Controller
     ViewBag.currentUser = currentuser; 
     ViewBag.currentUserId = (int)currentUserId;
     ViewBag.HasConversation = HasConversation;
+    ViewBag.CurrentUserImage = currentuser.ProfileImage;
 
     return View();
   }
