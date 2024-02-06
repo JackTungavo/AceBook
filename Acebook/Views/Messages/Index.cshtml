@@ -1,0 +1,13 @@
+@model acebook.Models.Message
+
+@if (ViewBag.currentUser != null) {<h1 id="IndexTitle">MESSAGES - "@ViewBag.currentUser.Name"</h1>}
+else {<h1 id="IndexTitle">MESSAGES - "NOT SIGNED IN"</h1>}
+
+@foreach (List<dynamic> check in ViewBag.HasConversation)
+{
+  var userDetails = check[1];
+  string lastMessage = check[3];
+  if (lastMessage == "") {lastMessage = "Start a Conversation!";}
+  <h3 title="MessageRedirect" href="/messages/@userDetails.Id" > @userDetails.Name <img src=@userDetails.ProfileImage width="2%" style="border-radius: 20px;"></h3> //hyperlink to user conversation
+  <h4> @lastMessage </h4> //display last sent message
+}

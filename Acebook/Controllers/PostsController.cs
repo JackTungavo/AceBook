@@ -39,22 +39,6 @@ public class PostsController : Controller
 
     //ImageFormats
     ViewBag.ImageFormats = new List<string>() {".jpg",".jpeg",".png"};
-    //bool ImageExists = false;
-    //foreach (string ImgForm in ViewBag.ImageFormats) 
-    //{
-      //start by checking if format is in post content.
-    //  if (post.Content.Contains(ImgForm)) {
-
-    //  }
-      //if it is then, check it is a valid image from web.
-    //  HttpWebRequest req = (HttpWebRequest)HttpWebRequest.Create(url);
-    //  req.Method = "HEAD";
-    //  try {req.GetResponse();ImageExists = true;}
-    //  catch{ImageExists = false;}
-    //  if (ImageExists == true) {break;}
-    //}
-    //ViewBag.ImageExists = ImageExists;
-    
     return View();
   }
 
@@ -101,10 +85,16 @@ public class PostsController : Controller
     List<Post> sortedByTimeCommments = comments.OrderByDescending(comment => comment.Time).ToList();
     ViewBag.Post = post;
     ViewBag.Comments = sortedByTimeCommments;//comments;
-    User user = dbContext.Users.Find(currentUserId);
-    ViewBag.CurrentUserImage = user.ProfileImage;
-    dbContext.SaveChanges();
+    if (dbContext.Users.Find(currentUserId) != null) {
+      User user = dbContext.Users.Find(currentUserId);
+      ViewBag.CurrentUserImage = user.ProfileImage;
+    }
+    else
+    {
+      ViewBag.CurrentUserImage = "https://preview.redd.it/71omzkrcy1la1.png?width=271&format=png&auto=webp&s=77a208578fd723a400534d17e43d58dcb700e217";
+    }
 
+    dbContext.SaveChanges();
     return View(post);
   }
 
