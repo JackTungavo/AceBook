@@ -36,20 +36,21 @@ public class MessagesController : Controller
     return finalresult;
   }
 
-  public Tuple<bool, string> CheckMessagesExistBetweenTwo(int userid1, int userid2)
+  public Tuple<bool, string, Message> CheckMessagesExistBetweenTwo(int userid1, int userid2)
   {
     var AllMessages = dbContext.Messages.ToList();
     AllMessages = AllMessages.OrderBy(m => m.Time).ToList();
     bool finalresult = false;
     string LastMessage = "";
+    Message MessageObj = new();
 
     foreach (Message m in AllMessages)
     {
-      if (m.User1Id == userid1 && m.User2Id == userid2) {finalresult = true; LastMessage = m.Content; break;}
-      else if (m.User1Id == userid2 && m.User2Id == userid1) {finalresult = true; LastMessage = m.Content; break;}
+      if (m.User1Id == userid1 && m.User2Id == userid2) {finalresult = true; LastMessage = m.Content; MessageObj = m; break;}
+      else if (m.User1Id == userid2 && m.User2Id == userid1) {finalresult = true; LastMessage = m.Content; MessageObj = m; break;}
     }
 
-    return Tuple.Create(finalresult, LastMessage);
+    return Tuple.Create(finalresult, LastMessage, MessageObj);
   }
 
   [Route("/messages")]
@@ -59,7 +60,7 @@ public class MessagesController : Controller
     //returns if we have conversations with users
     var currentUserId = HttpContext.Session.GetInt32("user_id");
     var AllUsers = dbContext.Users.ToList();
-    List<List<dynamic>> HasConversation = new List<List<dynamic>>(); //[1] = OtherUserObj, [2] = Any Messages Sent Bool, [3] = Last Message Sent
+    List<List<dynamic>> HasConversation = new List<List<dynamic>>(); //[0] = OtherUserObj, [1] = Any Messages Sent Bool, [2] = Last Message Sent
 
     foreach (User otherUser in AllUsers)
     {
@@ -67,11 +68,12 @@ public class MessagesController : Controller
       {
         if (CheckTwoUsersAreFriends((int)currentUserId, otherUser.Id) == true) 
         {
-          Tuple<bool, string> CheckBoolAndLastMessage = CheckMessagesExistBetweenTwo((int)currentUserId, otherUser.Id);
+          Tuple<bool, string, Message> CheckBoolAndLastMessage = CheckMessagesExistBetweenTwo((int)currentUserId, otherUser.Id);
           HasConversation.Add(new List<dynamic> {
             otherUser,                     //OtherUserObject
             CheckBoolAndLastMessage.Item1, //Messages Sent Boolean
-            CheckBoolAndLastMessage.Item2  //Last Message Sent String
+            CheckBoolAndLastMessage.Item2, //Last Message Sent String
+            CheckBoolAndLastMessage.Item3  //Last MessageObject
             });
         }
       }
@@ -94,16 +96,17 @@ public class MessagesController : Controller
     if (currentUserId == null) {return new RedirectResult("/signup");} // go to signup, if not logged in.
 
     List<Message> AllMessages = dbContext.Messages.ToList();
+    List<Message> FinalMessages = dbContext.Messages.ToList();
     foreach (Message m in AllMessages) {
       bool validMessage = true;
       //check if both user id's dont match current user
       if (m.User1Id != (int)currentUserId && m.User2Id != (int)currentUserId){validMessage = false;}
       //check if both user if's dont match other user
       if (m.User1Id != OtherUserId && m.User2Id != OtherUserId) {validMessage = false;}
-      if (validMessage == false) {AllMessages.Remove(m);}
+      if (validMessage == false) {FinalMessages.Remove(m);}
     }
-
-    ViewBag.AllMessages = AllMessages.OrderByDescending(m => m.Time).ToList();
+    
+    ViewBag.AllMessages = FinalMessages.OrderByDescending(m => m.Time).ToList();
     User currentUser = dbContext.Users.Find(currentUserId);
     ViewBag.currentUser = currentUser;
     User otherUser = dbContext.Users.Find(OtherUserId);
@@ -123,8 +126,11 @@ public class MessagesController : Controller
       newMessage.User1Id = (int)currentUserId.Value;
       newMessage.User2Id = OtherUserId;
       newMessage.Time = DateTime.UtcNow;
-      dbContext.Messages.Add(newMessage);
-      dbContext.SaveChanges();
+      if (newMessage.Content != string.Empty) 
+      {
+        dbContext.Messages.Add(newMessage);
+        dbContext.SaveChanges();
+      }
     }
     return new RedirectResult($"/messages/{OtherUserId}");
   }

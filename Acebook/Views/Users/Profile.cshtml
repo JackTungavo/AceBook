@@ -10,8 +10,12 @@
         //<p>Following Status: @ViewBag.FollowingStatus</p>
         <form action="/users/followuser" method="post">
         <input type="hidden" name="profileId" value="@Model.Id" />
-        <input id="submit_button" type="submit" value="@ViewBag.FollowButtonText" />
+        
         </form>
+            <br>
+            <a href="/messages">
+                <input id="submit_button" type="submit" value="Messsage @Model.Name" />
+            </a>
     }
     
     <h4>My Bio</h4>
