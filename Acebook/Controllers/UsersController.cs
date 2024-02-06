@@ -118,7 +118,7 @@ public IActionResult Profile(int id)
             }
 }
 
-[Route("/users/")]
+
 
 
 [Route("/users/followuser")]
