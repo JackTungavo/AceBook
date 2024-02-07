@@ -22,10 +22,11 @@ public class MessagesController : Controller
   public bool CheckTwoUsersAreFriends(int id1, int id2)
   {
     bool finalresult = false;
-    User U1 = dbContext.Users.Find(id1);
-    User U2 = dbContext.Users.Find(id2);
+    if (dbContext.Users == null) {return false;}
+    User? U1 = dbContext.Users.Find(id1);
+    User? U2 = dbContext.Users.Find(id2);
 
-    if (U1 != null && U2 != null)
+    if (U1 != null && U2 != null && U1.UsersIFollow != null && U2.UsersIFollow != null)
     {
       if (U1.UsersIFollow.Contains(id2.ToString()) && U2.UsersIFollow.Contains(id1.ToString())) 
       {
@@ -38,17 +39,24 @@ public class MessagesController : Controller
 
   public Tuple<bool, string, Message> CheckMessagesExistBetweenTwo(int userid1, int userid2)
   {
-    var AllMessages = dbContext.Messages.ToList();
-    AllMessages = AllMessages.OrderBy(m => m.Time).ToList();
     bool finalresult = false;
-    string LastMessage = "";
-    Message MessageObj = new();
-
-    foreach (Message m in AllMessages)
+    string? LastMessage = string.Empty;
+    Message MessageObj = new()
     {
-      if (m.User1Id == userid1 && m.User2Id == userid2) {finalresult = true; LastMessage = m.Content; MessageObj = m; break;}
-      else if (m.User1Id == userid2 && m.User2Id == userid1) {finalresult = true; LastMessage = m.Content; MessageObj = m; break;}
+       Content = string.Empty
+    };
+
+    if (dbContext.Messages != null) 
+    {
+      var AllMessages = dbContext.Messages.ToList();
+      AllMessages = AllMessages.OrderBy(m => m.Time).ToList();
+      foreach (Message m in AllMessages)
+      {
+        if (m.User1Id == userid1 && m.User2Id == userid2) {finalresult = true; LastMessage = m.Content; MessageObj = m; break;}
+        else if (m.User1Id == userid2 && m.User2Id == userid1) {finalresult = true; LastMessage = m.Content; MessageObj = m; break;}
+      }
     }
+
 
     return Tuple.Create(finalresult, LastMessage, MessageObj);
   }
