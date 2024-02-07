@@ -5,50 +5,53 @@
 
 @model acebook.Models.User
 
-<h1 id="title">Posts</h1>
+<div class="post-form">
+  <h1 id="title">Posts</h1>
+  <form action="/posts" method="post">
+    <input type="text" name="content" placeholder="What's on your mind?"/>
+    <input id="submit_button" type="submit" value="Submit"/>
+  </form>
+</div>
 
-<form action="/posts" method="post">
-  <input type="text" name="content"/>
-  <input id="submit_button" type="submit" value="Submit"/>
-</form>
-@if (ViewBag.Posts.Count == 0)
-{
-  <p>No Posts!</p>
-}
-@foreach (Post post in ViewBag.Posts)
-{
-  
-  if(post.PostParentId == 0){
-    @if (post.User == null) {<p>Posted By: User Not Found</p>}
-    else {
-      @if (ViewBag.Id==post.User.Id)
-      {
-        <a title="Go to your profile" href="/profile/@post.User.Id" >Posted By: Me <img src=@post.User.ProfileImage width="2%" style="border-radius: 20px;"> </a>
-      }
-      else
-      {
-      <a title="Go to {@post.User.Name}'s profile" href="/profile/@post.User.Id" >Posted By: @post.User.Name <img src=@post.User.ProfileImage width="2%" style="border-radius: 20px;"> </a>
-      }
-    }
-  
-  bool imageFound = false;
-  @foreach (string ImgForm in ViewBag.ImageFormats) 
+<div class="posts-container">
+  @if (ViewBag.Posts.Count == 0)
   {
-    if (post.Content != null && post.Content.Contains(ImgForm)) 
-    {
-      imageFound = true;
-      break;
-    }
+    <p>No Posts!</p>
   }
-  if (imageFound == true) {<img tag="postImage" src=@post.Content width="30%">}
-  else {<p>@post.Content</p>}
-  <p>@post.Time</p>
-  <p id="LinkToPosts">
-    <a href="/posts/@post.Id" class="btn btn-primary" id="LinkToPosts">View Details</a>
-  </p>
+  @foreach (Post post in ViewBag.Posts)
+  {
+    <div class="post">
+      @{
+        if(post.PostParentId == 0){
+        @if (post.User == null) {<p>Posted By: User Not Found</p>}
+        else {
+          @if (ViewBag.Id==post.User.Id)
+          {
+            <a title="Go to your profile" href="/profile/@post.User.Id" >Posted By: Me <img src=@post.User.ProfileImage width="2%" style="border-radius: 20px;"> </a>
+          }
+          else
+          {
+          <a title="Go to {@post.User.Name}'s profile" href="/profile/@post.User.Id" >Posted By: @post.User.Name <img src=@post.User.ProfileImage width="2%" style="border-radius: 20px;"> </a>
+          }
+        }
+      
+      bool imageFound = false;
+      @foreach (string ImgForm in ViewBag.ImageFormats) 
+      {
+        if (post.Content != null && post.Content.Contains(ImgForm)) 
+        {
+          imageFound = true;
+          break;
+        }
+      }
+      if (imageFound == true) {<img tag="postImage" src=@post.Content width="30%">}
+      else {<p>@post.Content</p>}
+      <p>@post.Time</p>
+      <p id="LinkToPosts">
+        <a href="/posts/@post.Id" class="btn btn-primary" id="LinkToPosts">View Details</a>
+      </p>
+      }
+      }
+    </div>
   }
-}
-@* @if (ViewBag.Id != null)
-{
-  <a href="/profile/@ViewBag.Id">My profile page</a>
-} *@
+</div>

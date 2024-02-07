@@ -17,6 +17,15 @@ body {
   margin-bottom: 60px;
 }
 
+input {
+  display: block;
+  margin-bottom: 10px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box; /* Ensure padding and border are included in the element's total width and height */
+}
+
 #logo {
   display: flex;
   justify-content: center;
@@ -78,4 +87,95 @@ body {
   cursor: not-allowed;
   background: rgba(0, 0, 0, .08);
   color: rgba(0, 0, 0, .3);
+}
+
+/* Sign-Up Page */
+.signup-form {
+  max-width: 300px;
+  margin: 0 auto;
+  padding: 20px;
+  border-radius: 10px;
+  background-color: #f0f0f0;
+  
+}
+
+.signup-form input {
+  display: block;
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box; /* Ensure padding and border are included in the element's total width and height */
+}
+
+.signup-form input[type="submit"] {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+.signup-form input[type="submit"]:hover {
+  background-color: #0a4aaa;
+}
+
+/* Posts Page */
+.post-form {
+  /* margin-bottom: 40px; */
+  min-width: 50%;
+  width: fit-content; /* Adjust width as needed */
+  margin: 0 auto 20px; /* Horizontally center the form */
+  display: flex;
+  flex-direction: column; /* Display children vertically */
+  align-items: center; /* Center items horizontally */
+  text-align: center; /* Center the text input */
+}
+
+.post-form form input[type="text"],
+.post-form form input[type="submit"] {
+  display: block; /* Make elements block-level */
+  margin: 0 auto; /* Center the elements */
+  width: 500px; /* Adjust the maximum width as needed */
+}
+
+.post-form form input[type="submit"] {
+  margin-top: 10px; /* Add space between input and button */
+}
+
+
+.posts-container {
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  padding: 10px;
+  width: fit-content; /* Adjust width as needed. Was 80% */
+  min-width: 50%;
+  max-width: 90%;
+  margin: 0 auto; /* Horizontally center the container */
+  background-color: #f0f0f0;
+}
+
+.post {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+  background-color: #ffffff;
+}
+
+.post p {
+  margin: 5px 0;
+}
+
+.post img {
+  display: block;
+  margin-bottom: 10px;
+  border-radius: 5px;
+}
+
+.link-to-posts {
+  text-align: right;
 }
