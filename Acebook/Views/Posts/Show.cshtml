@@ -6,8 +6,7 @@
     <p>Content: @Model.Content</p>
     <p>Time: @Model.Time</p>
     <form action="@Model.Id/like" method="post">
-        
-        <input id="submit_button" type="submit" value="Likes: @Model.Likes"/>
+        <input id="submit_button" type="submit" name="LikePostButton" value="Likes: @Model.Likes"/>
     </form>
 </div>
 
@@ -18,7 +17,7 @@
     <div>
         <p id="comments">@comment.Content</p>
         <form action="@comment.Id/like" method="post">
-            <input id="submit_button" type="submit" value="Likes: @comment.Likes"/>
+            <input id="submit_button" type="submit" name="LikeCommentButton" value="Likes: @comment.Likes"/>
         </form>
     </div>
 }
