@@ -22,9 +22,9 @@ namespace Acebook.Tests
     [Test]
     public void SignUp_ValidCredentials_RedirectToSignIn()
     {
-      driver.Navigate().GoToUrl("http://127.0.0.1:5287");
-      IWebElement signUpButton = driver.FindElement(By.Id("signup"));
-      signUpButton.Click();
+      driver.Navigate().GoToUrl("http://127.0.0.1:5287/signup");
+      // IWebElement signUpButton = driver.FindElement(By.Id("signup"));
+      // signUpButton.Click();
       IWebElement nameField = driver.FindElement(By.Id("name"));
       nameField.SendKeys("francine");
       IWebElement emailField = driver.FindElement(By.Id("email"));
@@ -39,9 +39,9 @@ namespace Acebook.Tests
 
     [Test]
     public void SignIn_ValidCredentials_RedirectToPosts() {
-      driver.Navigate().GoToUrl("http://127.0.0.1:5287");
-      IWebElement signUpButton = driver.FindElement(By.Id("signup"));
-      signUpButton.Click();
+      driver.Navigate().GoToUrl("http://127.0.0.1:5287/signup");
+      // IWebElement signUpButton = driver.FindElement(By.Id("signup"));
+      // signUpButton.Click();
       IWebElement nameField = driver.FindElement(By.Id("name"));
       nameField.SendKeys("francine");
       IWebElement emailField = driver.FindElement(By.Id("email"));

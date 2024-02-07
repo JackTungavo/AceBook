@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Diagnostics.CodeAnalysis;
 using acebook.Models;
 using Microsoft.EntityFrameworkCore;
+using OpenQA.Selenium.Support.UI;
+
 
 
 public class PostsTests
@@ -144,8 +146,25 @@ public class PostsTests
         }
         }
         Assert.That(isFound, Is.EqualTo(true));
-        // IWebElement title = driver.FindElement(By.Id("comments"));
-        // Assert.AreEqual("Test Comment", title.GetAttribute("innerHTML"));
+        
+    //  Like a post
+    IWebElement likePostButton = driver.FindElement(By.XPath("//input[@name='LikePostButton']"));
+    likePostButton.Click();
+
+    // Re-locate the button element to capture the updated text value
+    likePostButton = driver.FindElement(By.XPath("//input[@name='LikePostButton']"));
+
+    Assert.That(likePostButton.GetAttribute("value"), Is.EqualTo("Likes: 1"));
+
+
+    // Like a comment
+    IWebElement likeCommentButton = driver.FindElement(By.XPath("//input[@name='LikeCommentButton']"));
+    likeCommentButton.Click();
+
+    // Re-locate the button element to capture the updated text value
+    likeCommentButton = driver.FindElement(By.XPath("//input[@name='LikeCommentButton']"));
+
+    Assert.That(likeCommentButton.GetAttribute("value"), Is.EqualTo("Likes: 1"));
     }
 
 
@@ -154,9 +173,7 @@ public class PostsTests
     private void SignInUser()
         {
             driver.Navigate().GoToUrl("http://127.0.0.1:5287/signup");
-            // Not working for Harry everyone must suffer for his misfortune.
-            // IWebElement signUpButton = driver.FindElement(By.XPath("//*[text()='Sign Up']"));
-            // signUpButton.Click();
+            
             IWebElement nameField = driver.FindElement(By.Id("name"));
             nameField.SendKeys("francine");
 
@@ -186,6 +203,7 @@ public class PostsTests
         {
             if (dbContext.Posts != null) {dbContext.Posts.RemoveRange(dbContext.Posts);}
             if (dbContext.Users != null) {dbContext.Users.RemoveRange(dbContext.Users);}
+            if (dbContext.Messages != null) {dbContext.Messages.RemoveRange(dbContext.Messages);}
             dbContext.SaveChanges();
         }
     }
