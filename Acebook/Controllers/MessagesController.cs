@@ -40,7 +40,7 @@ public class MessagesController : Controller
   public Tuple<bool, string, Message> CheckMessagesExistBetweenTwo(int userid1, int userid2)
   {
     bool finalresult = false;
-    string? LastMessage = string.Empty;
+    string LastMessage = string.Empty;
     Message MessageObj = new()
     {
        Content = string.Empty
@@ -52,11 +52,12 @@ public class MessagesController : Controller
       AllMessages = AllMessages.OrderBy(m => m.Time).ToList();
       foreach (Message m in AllMessages)
       {
-        if (m.User1Id == userid1 && m.User2Id == userid2) {finalresult = true; LastMessage = m.Content; MessageObj = m; break;}
-        else if (m.User1Id == userid2 && m.User2Id == userid1) {finalresult = true; LastMessage = m.Content; MessageObj = m; break;}
+        if (m.Content != null) {
+          if (m.User1Id == userid1 && m.User2Id == userid2) {finalresult = true; LastMessage = m.Content; MessageObj = m; break;}
+          else if (m.User1Id == userid2 && m.User2Id == userid1) {finalresult = true; LastMessage = m.Content; MessageObj = m; break;}
+        }
       }
     }
-
 
     return Tuple.Create(finalresult, LastMessage, MessageObj);
   }
@@ -66,35 +67,44 @@ public class MessagesController : Controller
   public IActionResult Index() 
   {
     //returns if we have conversations with users
-    var currentUserId = HttpContext.Session.GetInt32("user_id");
-    ViewBag.Id = (int)currentUserId.Value;
-    var AllUsers = dbContext.Users.ToList();
     List<List<dynamic>> HasConversation = new List<List<dynamic>>(); //[0] = OtherUserObj, [1] = Any Messages Sent Bool, [2] = Last Message Sent
 
-    foreach (User otherUser in AllUsers)
+    var currentUserId = HttpContext.Session.GetInt32("user_id");
+    if (currentUserId != null && dbContext.Users != null) 
     {
-      if (currentUserId != null && otherUser.Id != (int)currentUserId) // if user checking is not current user
+      ViewBag.Id = (int)currentUserId.Value;
+      var AllUsers = dbContext.Users.ToList();
+
+      foreach (User otherUser in AllUsers)
       {
-        if (CheckTwoUsersAreFriends((int)currentUserId, otherUser.Id) == true) 
+        if (currentUserId != null && otherUser.Id != (int)currentUserId) // if user checking is not current user
         {
-          Tuple<bool, string, Message> CheckBoolAndLastMessage = CheckMessagesExistBetweenTwo((int)currentUserId, otherUser.Id);
-          HasConversation.Add(new List<dynamic> {
-            otherUser,                     //OtherUserObject
-            CheckBoolAndLastMessage.Item1, //Messages Sent Boolean
-            CheckBoolAndLastMessage.Item2, //Last Message Sent String
-            CheckBoolAndLastMessage.Item3  //Last MessageObject
-            });
+          if (CheckTwoUsersAreFriends((int)currentUserId, otherUser.Id) == true) 
+          {
+            Tuple<bool, string, Message> CheckBoolAndLastMessage = CheckMessagesExistBetweenTwo((int)currentUserId, otherUser.Id);
+            HasConversation.Add(new List<dynamic> {
+              otherUser,                     //OtherUserObject
+              CheckBoolAndLastMessage.Item1, //Messages Sent Boolean
+              CheckBoolAndLastMessage.Item2, //Last Message Sent String
+              CheckBoolAndLastMessage.Item3  //Last MessageObject
+              });
+          }
         }
+      }
+      
+      //if conversation exists, make hyperlink going to "messages/userid" for conversation
+      var searchuser = dbContext.Users.Find(currentUserId);
+      User currentuser;
+      if (searchuser != null)
+      {
+        currentuser = searchuser;
+        ViewBag.CurrentUserImage = currentuser.ProfileImage;
+        ViewBag.currentUser = currentuser;
+        if (currentUserId != null) { ViewBag.currentUserId = (int)currentUserId;}
       }
     }
     
-    //if conversation exists, make hyperlink going to "messages/userid" for conversation
-    User currentuser = dbContext.Users.Find(currentUserId);
-    ViewBag.currentUser = currentuser; 
-    ViewBag.currentUserId = (int)currentUserId;
     ViewBag.HasConversation = HasConversation;
-    ViewBag.CurrentUserImage = currentuser.ProfileImage;
-
     return View();
   }
 
@@ -105,22 +115,41 @@ public class MessagesController : Controller
     var currentUserId = HttpContext.Session.GetInt32("user_id");
     if (currentUserId == null) {return new RedirectResult("/signup");} // go to signup, if not logged in.
 
-    List<Message> AllMessages = dbContext.Messages.ToList();
-    List<Message> FinalMessages = dbContext.Messages.ToList();
-    foreach (Message m in AllMessages) {
-      bool validMessage = true;
-      //check if both user id's dont match current user
-      if (m.User1Id != (int)currentUserId && m.User2Id != (int)currentUserId){validMessage = false;}
-      //check if both user if's dont match other user
-      if (m.User1Id != OtherUserId && m.User2Id != OtherUserId) {validMessage = false;}
-      if (validMessage == false) {FinalMessages.Remove(m);}
+    List<Message> AllMessages;
+    List<Message> FinalMessages;
+
+    if (dbContext.Messages != null) 
+    {
+      AllMessages = dbContext.Messages.ToList();
+      FinalMessages = dbContext.Messages.ToList();
+      foreach (Message m in AllMessages) {
+        bool validMessage = true;
+        //check if both user id's dont match current user
+        if (m.User1Id != (int)currentUserId && m.User2Id != (int)currentUserId){validMessage = false;}
+        //check if both user if's dont match other user
+        if (m.User1Id != OtherUserId && m.User2Id != OtherUserId) {validMessage = false;}
+        if (validMessage == false) {FinalMessages.Remove(m);}
+      }
+        ViewBag.AllMessages = FinalMessages.OrderByDescending(m => m.Time).ToList();
+    }
+
+    User currentUser = new();
+    User otherUser = new();
+
+    if (dbContext.Users != null) 
+    {
+      var u1 = dbContext.Users.Find(currentUserId);
+      var u2 = dbContext.Users.Find(OtherUserId);
+      if (u1 != null && u2 != null) 
+      {
+        currentUser = u1;
+        otherUser = u2;
+      }
     }
     
-    ViewBag.AllMessages = FinalMessages.OrderByDescending(m => m.Time).ToList();
-    User currentUser = dbContext.Users.Find(currentUserId);
     ViewBag.currentUser = currentUser;
-    User otherUser = dbContext.Users.Find(OtherUserId);
     ViewBag.otherUser = otherUser;
+
     return View();
   }
 
