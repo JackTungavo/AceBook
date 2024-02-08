@@ -1,23 +1,37 @@
 @model acebook.Models.Message
-<h1>CONVERSATION</h1>
-<h2>@ViewBag.otherUser.Name <img src="@ViewBag.currentUser.ProfileImage" width="5%" style="border-radius: 20px;"> </h2>
+<h1 style="text-align: center;">Conversation with @ViewBag.otherUser.Name <img src="@ViewBag.otherUser.ProfileImage" width="3%" style="border-radius: 20px; border: 1px solid #000000"> </h1>
+<div class="post-form">
+  <form action="/messages/@ViewBag.otherUser.Id" method="post">
+    <input type="text" name="content" id="messageContent" placeholder="What would you like to say?"required>
+    <input id="submit_button" type="submit" value="Send">
+  </form>
+</div>
 
-@foreach (Message m in ViewBag.AllMessages) 
-{
-  Console.WriteLine(m.User1Id);
-  Console.WriteLine(m.User2Id);
-    if (m.User1Id == ViewBag.currentUser.Id) 
-    {
-        <h5><img src="@ViewBag.currentUser.ProfileImage" width="2%" style="border-radius: 20px;"> @m.Content</h5>
-    }
-    else
-    {
-        <h5>@m.Content<img src="@ViewBag.otherUser.ProfileImage" width="2%" style="border-radius: 20px;"></h5>
-    }
-}
+<div class="posts-container">
+  <div class="post-messages">
 
-@if (ViewBag.AllMessages == null || ViewBag.AllMessages.Count == 0) {<h5> No Current Messages</h5>}
-<form action="/messages/@ViewBag.otherUser.Id" method="post">
-  <input type="text" name="content" id="messageContent" required>
-  <input id="submit_button" type="submit" value="Send">
-</form>
+  @{
+    if (ViewBag.currentUser.UsersIFollow.Contains(ViewBag.otherUser.Id.ToString()) && ViewBag.otherUser.UsersIFollow.Contains(ViewBag.currentUser.Id.ToString())){
+      @foreach (Message m in ViewBag.AllMessages) 
+      {
+          if (m.User1Id == ViewBag.currentUser.Id) 
+          {
+            <div class="post-right">
+              <h5>@m.Content<img src="@ViewBag.currentUser.ProfileImage" width="2%" style="border-radius: 20px; border: 1px solid #000000"></h5>
+            </div>
+          }
+          else
+          {
+            <div class="post-left">
+              <h5><img src="@ViewBag.otherUser.ProfileImage" width="2%" style="border-radius: 20px; border: 1px solid #000000"> @m.Content</h5>
+            </div>
+          }
+      }
+      @if (ViewBag.AllMessages == null || ViewBag.AllMessages.Count == 0) {<h5> No Current Messages</h5>}
+    }
+    else{
+      <h5>You cannot send messages until you follow each other.</h5>
+    }
+  }
+  </div>
+</div>

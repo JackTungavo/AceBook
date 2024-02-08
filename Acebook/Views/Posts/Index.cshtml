@@ -8,7 +8,7 @@
 <div class="post-form">
   <h1 id="title">Posts</h1>
   <form action="/posts" method="post">
-    <input type="text" name="content" placeholder="What's on your mind?"/>
+    <input type="text" name="content" placeholder="What's on your mind?" required/>
     <input id="submit_button" type="submit" value="Submit"/>
   </form>
 </div>
@@ -20,18 +20,18 @@
   }
   @foreach (Post post in ViewBag.Posts)
   {
-    <div class="post">
+    <div class="post-messages">
       @{
         if(post.PostParentId == 0){
         @if (post.User == null) {<p>Posted By: User Not Found</p>}
         else {
           @if (ViewBag.Id==post.User.Id)
           {
-            <a title="Go to your profile" href="/profile/@post.User.Id" >Posted By: Me <img src=@post.User.ProfileImage width="2%" style="border-radius: 20px;"> </a>
+            <a title="Go to your profile" href="/profile/@post.User.Id" >Posted By: Me <img src=@post.User.ProfileImage width="2%" style="border-radius: 20px; border: 1px solid #000000"> </a>
           }
           else
           {
-          <a title="Go to {@post.User.Name}'s profile" href="/profile/@post.User.Id" >Posted By: @post.User.Name <img src=@post.User.ProfileImage width="2%" style="border-radius: 20px;"> </a>
+          <a title="Go to {@post.User.Name}'s profile" href="/profile/@post.User.Id" >Posted By: @post.User.Name <img src=@post.User.ProfileImage width="2%" style="border-radius: 20px; border: 1px solid #000000"> </a>
           }
         }
       
@@ -46,7 +46,7 @@
       }
       if (imageFound == true) {<img tag="postImage" src=@post.Content width="30%">}
       else {<p>@post.Content</p>}
-      <p>@post.Time</p>
+      <p style="font-size: small;">@post.Time</p>
       <p id="LinkToPosts">
         <a href="/posts/@post.Id" class="btn btn-primary" id="LinkToPosts">View Details</a>
       </p>

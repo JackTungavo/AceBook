@@ -123,7 +123,7 @@ input {
   background-color: #0a4aaa;
 }
 
-/* Posts Page */
+/* Posts Page (Used globally) */
 .post-form {
   /* margin-bottom: 40px; */
   min-width: 50%;
@@ -179,3 +179,27 @@ input {
 .link-to-posts {
   text-align: right;
 }
+
+/* Messages Page */
+.post-left {
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+  text-align: left;
+}
+
+.post-right {
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+  text-align: right;
+}
+
+.post-messages {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+  background-color: #ffffff;
+}
+
