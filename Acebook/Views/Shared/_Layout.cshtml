@@ -48,7 +48,7 @@
                     @if (ViewBag.Id != null){
                         <div style="position: absolute; top: 0; right: 0; text-align: center;">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Profile" asp-route-id="@ViewBag.Id">
-                                <img src="@ViewBag.CurrentUserImage" alt="Profile-Picture" style="width: 45px; border-radius: 20px;"/>
+                                <img src="@ViewBag.CurrentUserImage" alt="Profile-Picture" style="width: 45px; border-radius: 20px; border: 1px solid #000000"/>
                                 <span style="display: block;">My Profile</span>
                             </a>
                         </div>

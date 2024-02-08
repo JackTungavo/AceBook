@@ -77,13 +77,33 @@ public class UsersController : Controller
     [Route("/users")]
     [HttpPost]
     public RedirectResult Create(User user) {
-      //AcebookDbContext dbContext = new AcebookDbContext();
-      user.ProfileImage = "https://creativeandcultural.files.wordpress.com/2018/04/default-profile-picture.png?w=256";
-      user.UsersIFollow = string.Empty;
-      user.UsersFollowingMe = string.Empty;
-      dbContext.Users.Add(user);
-      dbContext.SaveChanges();
-      return new RedirectResult("/signin");
+        bool email_Exists = false;
+        foreach (User u in dbContext.Users)
+        {
+            if (u.Email == user.Email) 
+            {
+                email_Exists = true;
+                break;
+            }
+        }
+
+        if (email_Exists == true) 
+        {
+            ViewBag.Feedback = Feedback;
+            return new RedirectResult("/signup")
+        }
+        else
+        {
+            user.ProfileImage = "https://creativeandcultural.files.wordpress.com/2018/04/default-profile-picture.png?w=256";
+            user.UsersIFollow = string.Empty;
+            user.UsersFollowingMe = string.Empty;
+            dbContext.Users.Add(user);
+            dbContext.SaveChanges();
+
+            //Then, make go straight to feed.
+            HttpContext.Session.SetInt32("user_id", user.Id);
+            return new RedirectResult("/posts");
+        }
     }
 
 [Route("/profile/{id}")]
@@ -156,8 +176,6 @@ public IActionResult Follow(int profileId)
     // Redirect back to the same profile page
     return RedirectToAction("Profile", new { id = profileId });
 }
-
-
 
     [Route("/updateprofile")]
     [HttpPost]

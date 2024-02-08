@@ -1,38 +1,38 @@
 @model acebook.Models.Post
-
-<h1>Post Details</h1>
-<div>
-    <p>ID: @Model.Id</p>
-    <p>Content: @Model.Content</p>
-    <p>Time: @Model.Time</p>
-    <form action="@Model.Id/like" method="post">
-        <input id="submit_button" type="submit" name="LikePostButton" value="Likes: @Model.Likes"/>
-    </form>
-</div>
-
-<h2 id="title">Comments</h2>
-
-@foreach (Post comment in ViewBag.Comments)
-{
-    <div>
-        <p id="comments">@comment.Content</p>
-        <form action="@comment.Id/like" method="post">
-            <input id="submit_button" type="submit" name="LikeCommentButton" value="Likes: @comment.Likes"/>
+<div class="posts-container">
+    <div class="post-messages" style="text-align: center; align-items: center; text-align: center;">
+        @{
+            bool imageFound = false;
+            foreach (string ImgForm in ViewBag.ImageFormats) 
+            {
+                if (Model.Content != null && Model.Content.Contains(ImgForm)) 
+                {
+                    imageFound = true; break;
+                }
+            }
+            if (imageFound) {<img id="postImage" src=@Model.Content width="30%">}
+            else {<h2>@Model.Content</h2>}
+        }
+        <p>Posted By:
+            <a title="MessageRedirect" href="/profile/@Model.User.Id"> 
+            @Model.User.Name <img src=@Model.User.ProfileImage width="3%" style="border-radius: 20px; border: 1px solid #000000"></a>
+        </p> 
+        <p>Time: @Model.Time</p>
+        <form action="@Model.Id/like" method="post">
+            <input id="submit_button" type="submit" name="LikePostButton" style="margin: 0 auto;" value="♥ @Model.Likes"/>
         </form>
+        <hr>
+        <h4 id="title">Comments</h4>
+        <form action="/posts/comment?postParentId=@Model.Id" method="post">
+        <input type="text" name="content" placeholder="Add new comment..." style="margin: 0 auto;margin-bottom: 5px;" required/>
+        <input id="comment_button" type="submit" style="margin: 0 auto;" value="Submit"/>
+        </form>
+        @foreach (Post comment in ViewBag.Comments)
+        {
+                <p id="comments" style="margin-bottom: 0px;margin-top: 5px;">@comment.Content</p>
+                <form action="@comment.Id/like" method="post">
+                    <input id="submit_button" type="submit" name="LikeCommentButton" style="margin: 0 auto;" value="♥ @comment.Likes"/>
+                </form>
+        }
     </div>
-}
-
-
-
-
-
-<h3>Add new comment</h3>
-
-<form action="/posts/comment?postParentId=@Model.Id" method="post">
-  <input type="text" name="content"/>
-  <input id="comment_button" type="submit" value="Submit"/>
-</form>
-
-
-<h2></h2>
-
+</div>

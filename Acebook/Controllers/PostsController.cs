@@ -13,6 +13,7 @@ namespace acebook.Controllers;
 public class PostsController : Controller
 {
   private readonly ILogger<PostsController> _logger;
+  public List<string> ImageFormats = new List<string>() {".jpg",".jpeg",".png"};
   AcebookDbContext dbContext = new AcebookDbContext(); 
   public PostsController(ILogger<PostsController> logger)
   {
@@ -24,7 +25,7 @@ public class PostsController : Controller
   public IActionResult Index() 
   {
     var currentUserId = HttpContext.Session.GetInt32("user_id");
-    if (currentUserId != null) 
+    if (currentUserId != null && dbContext.Users != null && dbContext.Users.Find(currentUserId) != null) 
     {
       User user = dbContext.Users.Find(currentUserId);
       ViewBag.CurrentUserImage = user.ProfileImage;
@@ -38,7 +39,7 @@ public class PostsController : Controller
     }
 
     //ImageFormats
-    ViewBag.ImageFormats = new List<string>() {".jpg",".jpeg",".png"};
+    ViewBag.ImageFormats = ImageFormats;
     return View();
   }
 
@@ -79,23 +80,31 @@ public class PostsController : Controller
     {
       comment.Likes = GetLikesFromPost(comment);
     }
-    //dbContext.SaveChanges();
+    dbContext.SaveChanges();
     // Pass the post and comments to the view
 
-    List<Post> sortedByTimeCommments = comments.OrderByDescending(comment => comment.Time).ToList();
+    List<Post> sortedByTimeComments = comments.OrderByDescending(comment => comment.Time).ToList();
     ViewBag.Post = post;
-    ViewBag.Comments = sortedByTimeCommments;//comments;
-    if (dbContext.Users.Find(currentUserId) != null) {
-      User user = dbContext.Users.Find(currentUserId);
-      ViewBag.CurrentUserImage = user.ProfileImage;
-    }
-    else
+    ViewBag.Comments = sortedByTimeComments;//comments;
+    if (dbContext.Users != null) 
     {
-      ViewBag.CurrentUserImage = "https://preview.redd.it/71omzkrcy1la1.png?width=271&format=png&auto=webp&s=77a208578fd723a400534d17e43d58dcb700e217";
+      User? user = dbContext.Users.Find(currentUserId);
+      if (user != null) {
+        ViewBag.Id = user.Id;
+        ViewBag.CurrentUser = user;
+        ViewBag.CurrentUserImage = user.ProfileImage;
+        ViewBag.ImageFormats = ImageFormats;
+        return View(post);
+      }
+      else
+      {
+        return new RedirectResult("/signin");
+      }
     }
-
-    dbContext.SaveChanges();
-    return View(post);
+    else //if session currently doesn't exist, take them to signinsignup
+    {
+      return new RedirectResult("/signin");
+    }
   }
 
   [Route("/posts/comment")]

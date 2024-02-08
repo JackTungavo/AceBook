@@ -32,7 +32,9 @@ public class SessionsController : Controller
         }
       }
       catch {
-        return new RedirectResult("/signup");
+        ViewBag.Feedback = "Account does not exist.";
+        return new RedirectResult("/signin");
+        //return new RedirectResult("/signup");
       }
       if(user != null && user.Password == password)
       {
@@ -41,6 +43,7 @@ public class SessionsController : Controller
       }
       else
       {
+        ViewBag.Feedback = "Incorrect Password";
         return new RedirectResult("/signin");
       }
     }
