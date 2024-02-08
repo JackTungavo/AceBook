@@ -34,8 +34,8 @@ public class PostsController : Controller
     
     if (dbContext.Posts != null) 
     {
-      List<Post> posts = dbContext.Posts.ToList();
-      ViewBag.Posts = posts;
+        List<Post> posts = dbContext.Posts.OrderByDescending(post => post.Time).ToList();
+        ViewBag.Posts = posts;
     }
 
     //ImageFormats
