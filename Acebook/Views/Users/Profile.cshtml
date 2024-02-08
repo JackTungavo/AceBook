@@ -1,11 +1,14 @@
 @{
     ViewData["Title"] = "Profile";
+    Layout = "_Layout";
 }
 
 @model acebook.Models.User
 
+<div class="profile-container">
 <h1>Profile Page</h1>
-<div>
+<div class="profile">
+
     <h2>Username: @Model.Name <img src=@ViewBag.ProfileLookingAtImage width="10%" style="width: 65px; border-radius: 20px"></h2>
     
     <h4>Followers: @ViewBag.UsersFollowersNumber || Following: @ViewBag.UsersIFollowingNumber</h4> 
@@ -41,4 +44,5 @@
         </form>
     }
 
+</div>
 </div>
