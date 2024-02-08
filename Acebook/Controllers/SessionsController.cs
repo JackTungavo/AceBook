@@ -25,6 +25,7 @@ public class SessionsController : Controller
     public RedirectResult Create(string email, string password) {
       AcebookDbContext dbContext = new AcebookDbContext();
       User? user = null;
+      var m = TempData["MESSAGE"];
       try 
       {
         if (dbContext.Users != null) {
@@ -32,7 +33,7 @@ public class SessionsController : Controller
         }
       }
       catch {
-        ViewBag.Feedback = "Account does not exist.";
+        TempData["MESSAGE"] = "Account does not exist.";
         return new RedirectResult("/signin");
         //return new RedirectResult("/signup");
       }
@@ -43,7 +44,7 @@ public class SessionsController : Controller
       }
       else
       {
-        ViewBag.Feedback = "Incorrect Password";
+        TempData["MESSAGE"] = "Incorrect Password";
         return new RedirectResult("/signin");
       }
     }

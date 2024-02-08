@@ -67,10 +67,15 @@ public class UsersController : Controller
         return CurrentUser.UsersIFollow.Split(',').ToList().Count-1;
     }
 
+    public string Feedback = string.Empty;
+
     [Route("/signup")]
     [HttpGet]
     public IActionResult New()
     {
+        var Message = TempData["MESSAGE"];
+        ViewBag.Feedback = Feedback;
+        Console.WriteLine(ViewBag.Feedback.ToString());
         return View();
     }
 
@@ -78,6 +83,7 @@ public class UsersController : Controller
     [HttpPost]
     public RedirectResult Create(User user) {
         bool email_Exists = false;
+        Feedback = string.Empty;
         foreach (User u in dbContext.Users)
         {
             if (u.Email == user.Email) 
@@ -86,14 +92,10 @@ public class UsersController : Controller
                 break;
             }
         }
-
-        if (email_Exists == true) 
-        {
-            ViewBag.Feedback = Feedback;
-            return new RedirectResult("/signup")
-        }
-        else
-        {
+       if (email_Exists) {
+        TempData["MESSAGE"] = "Email already assigned to account.";
+        return new RedirectResult("/signup");
+    } else {
             user.ProfileImage = "https://creativeandcultural.files.wordpress.com/2018/04/default-profile-picture.png?w=256";
             user.UsersIFollow = string.Empty;
             user.UsersFollowingMe = string.Empty;
